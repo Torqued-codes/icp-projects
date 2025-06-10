@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "HBT_ticketing_system_backend": {
+      "main": "src/HBT_ticketing_system_backend/main.mo",
+      "type": "motoko"
+    },
+    "HBT_ticketing_system_frontend": {
+      "dependencies": [
+        "HBT_ticketing_system_backend"
+      ],
+      "source": [
+        "src/HBT_ticketing_system_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "HBT_ticketing_system_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
