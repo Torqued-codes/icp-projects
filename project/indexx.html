@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Difference Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 45px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .icp-badge {
+            background: linear-gradient(45deg, #29b6f6, #1e88e5);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            display: inline-block;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .icp-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .input-section {
+            margin: 35px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:hover::before {
+            left: 100%;
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .calculate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 2px solid #e2e8f0;
+            display: none;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-container.show {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px 15px;
+            margin: 0 -15px;
+        }
+
+        .result-label {
+            font-weight: 700;
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #667eea;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .difference-value {
+            color: #e53e3e;
+            font-size: 1.8rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { 
+                transform: rotate(360deg); 
+            }
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            color: #c53030;
+            padding: 18px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+            font-weight: 600;
+            border-left: 5px solid #e53e3e;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .example {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #4a5568;
+            border-left: 4px solid #667eea;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            input[type="number"], .calculate-btn {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Random Calculator</h1>
+            <p class="subtitle">Enter a number and discover the difference!</p>
+            <div class="icp-badge">⚡ Powered by Internet Computer</div>
+        </div>
+        
+        <div class="example">
+            <strong>How it works:</strong> Input 90 → Get random 92 → Difference is 2
+        </div>
+        
+        <div class="input-section">
+            <label for="userNumber">Your Number:</label>
+            <input type="number" id="userNumber" placeholder="Enter any number (1-1000)" min="1" max="1000">
+        </div>
+        
+        <button class="calculate-btn" id="calculateBtn" onclick="calculateDifference()">
+            🎲 Calculate Difference
+        </button>
+        
+        <div id="errorMessage" class="error-message"></div>
+        
+        <div id="resultContainer" class="result-container">
+            <div class="result-item">
+                <span class="result-label">📝 Your Input:</span>
+                <span id="userInput" class="result-value">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">🎲 Random Number:</span>
+                <span id="randomNumber" class="result-value">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">📊 Difference:</span>
+                <span id="difference" class="result-value difference-value">-</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        // Replace with your actual canister ID after deployment
+        const BACKEND_CANISTER_ID = "your-backend-canister-id";
+        const IS_LOCAL = window.location.hostname === 'localhost';
+        const HOST = IS_LOCAL ? 'http://localhost:4943' : 'https://ic0.app';
+
+        async function calculateDifference() {
+            const userInput = document.getElementById('userNumber').value;
+            const button = document.getElementById('calculateBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Clear previous results
+            resultContainer.classList.remove('show');
+            errorMessage.classList.remove('show');
+
+            // Validate input
+            if (!userInput || isNaN(userInput)) {
+                showError('Please enter a valid number!');
+                return;
+            }
+
+            const number = parseInt(userInput);
+            if (number < 1 || number > 1000) {
+                showError('Please enter a number between 1 and 1000!');
+                return;
+            }
+
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<span class="loading"></span> Calculating...';
+
+            try {
+                // For demo purposes, simulate the backend call with local calculation
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+                
+                // Generate random number between 1 and 100 (simulating backend)
+                const randomNum = Math.floor(Math.random() * 100) + 1;
+                const diff = Math.abs(number - randomNum);
+                
+                const result = {
+                    user_input: number,
+                    random_number: randomNum,
+                    difference: diff
+                };
+
+                displayResult(result);
+
+                // In a real deployment, you would use this code:
+                /*
+                const agent = new HttpAgent({ host: HOST });
+                const actor = Actor.createActor(idlFactory, {
+                    agent,
+                    canisterId: BACKEND_CANISTER_ID,
+                });
+                
+                const result = await actor.calculate_difference(number);
+                displayResult(result);
+                */
+
+            } catch (error) {
+                console.error('Error calling backend:', error);
+                showError('Something went wrong! Please try again.');
+            } finally {
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = '🎲 Calculate Difference';
+            }
+        }
+
+        function displayResult(data) {
+            document.getElementById('userInput').textContent = data.user_input;
+            document.getElementById('randomNumber').textContent = data.random_number;
+            document.getElementById('difference').textContent = data.difference;
+            document.getElementById('resultContainer').classList.add('show');
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+            
+            // Auto-hide error after 5 seconds
+            setTimeout(() => {
+                errorElement.classList.remove('show');
+            }, 5000);
+        }
+
+        // Allow Enter key to trigger calculation
+        document.getElementById('userNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateDifference();
+            }
+        });
+
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+
+        // Auto-focus input field
+        window.addEventListener('load', () => {
+            document.getElementById('userNumber').focus();
+        });
+    </script>
+</body>
+</html>

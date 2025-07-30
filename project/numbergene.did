@@ -1,0 +1,10 @@
+type RandomResult = record {
+  user_input : int32;
+  random_number : int32;
+  difference : int32;
+};
+
+service : {
+  calculate_difference : (int32) -> (RandomResult);
+  get_info : () -> (text) query;
+}
